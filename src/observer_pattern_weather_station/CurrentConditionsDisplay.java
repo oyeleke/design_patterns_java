@@ -1,14 +1,16 @@
 package observer_pattern_weather_station;
 
+import java.util.Observable;
+import java.util.Observer;
+
 public class CurrentConditionsDisplay implements Observer, DisplayElement {
 
     private float temperature;
     private float humidity;
-    private Subject weatherData;
 
-    public CurrentConditionsDisplay(Subject weatherData) {
-        this.weatherData = weatherData;
-        this.weatherData.registerObserver(this);
+    public CurrentConditionsDisplay(Observable observable) {
+        Observable observable1 = observable;
+        observable.addObserver(this);
     }
 
     @Override
@@ -17,10 +19,12 @@ public class CurrentConditionsDisplay implements Observer, DisplayElement {
         + "F degrees and " + humidity + "% humidity");
     }
 
-    @Override
-    public void update(float temp, float humidity, float pressure) {
-        this.humidity = humidity;
-        this.temperature = temp;
-        display();
+    public void update(Observable obs, Object args){
+        if (obs instanceof WeatherData){
+            WeatherData weatherData = (WeatherData)obs;
+            temperature = weatherData.getTemperature();
+            humidity = weatherData.getHumidity();
+            display();
+        }
     }
 }
